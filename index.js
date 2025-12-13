@@ -16,7 +16,7 @@ app.use(
   })
 );
 app.listen(PORT, () => {
-  console.log("Server is running on http://localhost" + PORT);
+  console.log("Server is running on http://localhost:" + PORT);
 });
 
 //เพื่อให้สามารถรันหน้าเว็บได้ โดยที่รับ (req,res)มา
