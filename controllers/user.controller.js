@@ -1,8 +1,10 @@
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/User");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const secret = process.env.SECRET;
 
-// สร้าง salt 10 รอบ
-const salt = bcrypt.genSaltSync(10);
+// const salt = bcrypt.genSaltSync(10);
 
 exports.register = async (req, res) => {
   const { username, password } = req.body;
@@ -20,6 +22,7 @@ exports.register = async (req, res) => {
     }
 
     // เข้ารหัสรหัสผ่าน
+    const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     // บันทึกลง DB
@@ -36,38 +39,34 @@ exports.register = async (req, res) => {
   }
 };
 
-
-
 //Login
-exports.login = async (req,res) => {
-   const { username, password } = req.body;
+exports.login = async (req, res) => {
+  const { username, password } = req.body;
 
-     if (!username || !password) {
+  if (!username || !password) {
     return res.status(400).send({ message: "กรุณากรอกให้ครบจ้า" });
   }
 
-  try{
+  try {
     //เช็คว่ามี user ไหม
-    const user = await UserModel.findOneAndDelete({username});
-    if(!user){
-      return res.status(400).send({message:"username หรือ password ไม่ถูกต้องจ้า"})
+    const user = await UserModel.findOneAndDelete({ username });
+    if (!user) {
+      return res.status(404).send({ message: "User Not Found" });
     }
 
-
-
-     // 2) เปรียบเทียบรหัสผ่าน (เทียบกับ hash ใน DB)
-    const isMatch = bcrypt.compareSync(password, user.password);
+    // 2) เปรียบเทียบรหัสผ่าน (เทียบกับ hash ใน DB)
+    const isMatch = await bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      return res.status(400).send({ message: "username หรือ password ไม่ถูกต้องจ้า" });
+      return res.status(401).send({ message: "รหัสผ่านไม่ตรงค่า" });
     }
 
-    // 3) login สำเร็จ
-    return res.send({
-      message: "Login Success",
-      user: {
-        id: user._id,
-        username: user.username,
-      },
+    jwt.sign({ username, id: user._id }, secret, {}, (err, token) => {
+      if (err) {
+        res
+          .status(500)
+          .send({ message: "Internal Server Error: Authentication failed!!" });
+      }
+      res.send({ message: "Logged in Successfully", accessToken: token });
     });
   } catch (error) {
     return res.status(500).send({ error: error.message });

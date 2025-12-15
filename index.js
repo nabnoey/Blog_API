@@ -6,7 +6,7 @@ const PORT = process.env.PORT;
 const DB_URL = process.env.DB_URL;
 const BASE_URL = process.env.BASE_URL;
 const userRouter = require("./routers/user.router");
-
+const postRouter = require("./routers/post.router");
 
 const app = express();
 
@@ -17,9 +17,6 @@ app.use(
     methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
-app.listen(PORT, () => {
-  console.log("Server is running on http://localhost:" + PORT);
-});
 
 //เพื่อให้สามารถรันหน้าเว็บได้ โดยที่รับ (req,res)มา
 app.get("/", (req, res) => {
@@ -42,5 +39,8 @@ if (!DB_URL) {
 }
 
 //use routers
-
 app.use("/api/v1/user", userRouter);
+app.use("/api/v1/post", postRouter);
+app.listen(PORT, () => {
+  console.log("Server is running on http://localhost:" + PORT);
+});
