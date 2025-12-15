@@ -5,6 +5,8 @@ const cors = require("cors");
 const PORT = process.env.PORT;
 const DB_URL = process.env.DB_URL;
 const BASE_URL = process.env.BASE_URL;
+const userRouter = require("./routers/user.router");
+
 
 const app = express();
 
@@ -38,3 +40,7 @@ if (!DB_URL) {
       console.error("MongoDb Connect Error", error.message);
     });
 }
+
+//use routers
+
+app.use("/api/v1/user", userRouter);
