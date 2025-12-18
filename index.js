@@ -39,8 +39,9 @@ if (!DB_URL) {
 }
 
 //use routers
-app.use("/api/v1/user", userRouter);
-app.use("/api/v1/post", postRouter);
+app.use(express.json());
+app.use("/api/v1", userRouter);
+app.use("/api/v1", postRouter);
 app.listen(PORT, () => {
   console.log("Server is running on http://localhost:" + PORT);
 });
