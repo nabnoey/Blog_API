@@ -14,7 +14,9 @@ app.use(express.json());
 app.use(
   cors({
     origin: BASE_URL,
+
     methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 
@@ -39,7 +41,7 @@ if (!DB_URL) {
 }
 
 //use routers
-app.use(express.json());
+
 app.use("/api/v1", userRouter);
 app.use("/api/v1", postRouter);
 app.listen(PORT, () => {
