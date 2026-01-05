@@ -49,7 +49,7 @@ exports.login = async (req, res) => {
 
   try {
     //เช็คว่ามี user ไหม
-    const user = await UserModel.findOneAndDelete({ username });
+    const user = await UserModel.findOne({ username });
     if (!user) {
       return res.status(404).send({ message: "User Not Found" });
     }
@@ -66,7 +66,13 @@ exports.login = async (req, res) => {
           .status(500)
           .send({ message: "Internal Server Error: Authentication failed!!" });
       }
-      res.send({ message: "Logged in Successfully", accessToken: token });
+      res.send({
+        message: "Logged in Successfully",
+        //แก้ Backend ไม่ได้ส่งข้อมูลไป
+        id: user._id,
+        username: user.username,
+        accessToken: token,
+      });
     });
   } catch (error) {
     return res.status(500).send({ error: error.message });

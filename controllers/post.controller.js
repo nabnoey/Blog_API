@@ -2,6 +2,10 @@ const PostModel = require("../models/Post");
 const { post } = require("../routers/user.router");
 
 exports.createPost = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "Image is required" });
+  }
+
   const { title, summary, content, cover } = req.body;
   const authorId = req.authorId;
 
@@ -18,7 +22,7 @@ exports.createPost = async (req, res) => {
       title,
       summary,
       content,
-      cover,
+      cover: req.file.firebase,
       author: authorId,
     });
 

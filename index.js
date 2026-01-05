@@ -20,7 +20,10 @@ app.use(
   })
 );
 
-//เพื่อให้สามารถรันหน้าเว็บได้ โดยที่รับ (req,res)มา
+
+
+
+ //เพื่อให้สามารถรันหน้าเว็บได้ โดยที่รับ (req,res)มา
 app.get("/", (req, res) => {
   res.send("<h1>ได้จ้า</h1>");
 });
@@ -43,7 +46,7 @@ if (!DB_URL) {
 //use routers
 
 app.use("/api/v1", userRouter);
-app.use("/api/v1", postRouter);
+app.use("/api/v1/posts", postRouter);
 app.listen(PORT, () => {
   console.log("Server is running on http://localhost:" + PORT);
 });
