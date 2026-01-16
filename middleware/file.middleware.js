@@ -9,8 +9,8 @@ const {
   getDownloadURL,
 } = require("firebase/storage");
 
-const { intializeApp } = require("firebase/app");
-const app = intializeApp(firebaseConfig);
+const { initializeApp } = require("firebase/app");
+const app = initializeApp(firebaseConfig);
 const firebaseStorage = getStorage(app);
 
 //set storage
@@ -52,16 +52,23 @@ async function uploadToFirebase(req, res, next) {
   const metadata = {
     contentType: req.file.mimetype,
   };
+  try {
+    const snapshot = await uploadBytesResumable(
+      storageRef,
+      req.file.buffer,
+      metadata
+    );
 
-  try{
-    const snapshot = await uploadBytesResumable(storageRef,req.file.buffer,metadata)
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    req.file.firebaseUrl = downloadURL;
+
+    next();
+  } catch (error) {
+    res.status(500).json({
+      message:
+        error.message || "Something went wrong while uploading to Firebase",
+    });
   }
-
-  //get url from firebase
-  req.file.filebaseUrl = await getDownloadURL(snapshot.ref)
-  next()
-}catch(error){
-res.status(500).json({
-    message:error.message || "Something some wrong while uploading to firebase"
-})
 }
+
+module.exports = { upload, uploadToFirebase };

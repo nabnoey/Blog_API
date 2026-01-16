@@ -6,10 +6,10 @@ exports.createPost = async (req, res) => {
     return res.status(400).json({ message: "Image is required" });
   }
 
-  const { title, summary, content, cover } = req.body;
+  const { title, summary, content } = req.body;
   const authorId = req.authorId;
 
-  if (!title || !summary || !content || !cover) {
+  if (!title || !summary || !content) {
     return res.status(400).send({ message: "All fields are required" });
   }
 
@@ -22,7 +22,7 @@ exports.createPost = async (req, res) => {
       title,
       summary,
       content,
-      cover: req.file.firebase,
+      cover: req.file.supabaseUrl,
       author: authorId,
     });
 
@@ -129,13 +129,6 @@ exports.updatePost = async (req, res) => {
       return res
         .status(404)
         .send({ message: "Post with this author id is not found!" });
-    }
-
-    if (post.length == 0) {
-      return res.status(403).send({
-        message:
-          " Unauthorizw to edit is post, because you are not the author of this post",
-      });
     }
 
     postDoc.title = title;
