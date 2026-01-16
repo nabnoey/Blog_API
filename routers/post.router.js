@@ -21,5 +21,5 @@ router.get("/", postController.getAllPost);
 router.get("/:id", postController.getById);
 router.get("/author/:id", postController.getAuthorById);
 router.put("/:id", authJwt.verifyToken, postController.updatePost);
-router.delete("/post/:id", authJwt.verifyToken, postController.deletePost);
+router.delete("/:id", authJwt.verifyToken, postController.deletePost);
 module.exports = router;

@@ -161,7 +161,7 @@ exports.deletePost = async (req, res) => {
       author: authorId,
     });
     if (!postDoc) {
-      return res.status(500).send({ message: "Cannot Delete this Post!!" });
+      return res.status(404).send({ message: "Cannot Delete this Post!!" });
     }
   } catch (error) {
     res.status(500).send({ message: "Failed Delete Post!" });
